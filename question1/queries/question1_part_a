@@ -1,0 +1,9 @@
+SELECT
+    DATE(transaction_date) as date,
+    COUNT(*) as transactionsCount
+FROM
+    TRX
+GROUP BY
+    DATE(transaction_date)
+ORDER BY
+    date
