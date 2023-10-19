@@ -16,7 +16,7 @@ class Database:
 
         for table_name, data_address in data_name_to_address.items():
             data = pd.read_csv(data_address)
-            data.to_sql(table_name, con=connection, if_exists="append")
+            data.to_sql(table_name, con=connection, if_exists="replace")
 
         self.cursor = connection.cursor()
 
