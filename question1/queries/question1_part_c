@@ -1,0 +1,131 @@
+WITH CUSTOMER_ACTIVITIES AS (
+    SELECT customer_id as customerId, created_date as date FROM LOGIN
+    UNION SELECT customer_id as customerId, DATE(transaction_date) as date FROM TRX
+),
+UNIQUE_CUSTOMER_ACTIVITIES AS (
+    SELECT
+        date as activationDate,
+        customerId
+    FROM
+        CUSTOMER_ACTIVITIES
+    GROUP BY
+        date,
+        customerId
+),
+DAYS AS (
+    SELECT DISTINCT date as date FROM CUSTOMER_ACTIVITIES
+),
+ACTIVE_CUSTOMER_PAR_DAY AS (
+    SELECT
+        UNIQUE_CUSTOMER_ACTIVITIES.customerId as customerId,
+        DAYS.date as date
+    FROM (
+        DAYS CROSS JOIN UNIQUE_CUSTOMER_ACTIVITIES
+    )
+    WHERE
+        julianday(DAYS.date) - julianday(UNIQUE_CUSTOMER_ACTIVITIES.activationDate) <= 30
+        AND julianday(DAYS.date) - julianday(UNIQUE_CUSTOMER_ACTIVITIES.activationDate) >= 0
+),
+UNIQUE_ACTIVE_CUSTOMER_PAR_DAY AS (
+    SELECT
+        date,
+        customerId
+    FROM
+        ACTIVE_CUSTOMER_PAR_DAY
+    GROUP BY
+        date,
+        customerId
+),
+CUSTOMER_ACCOUNT_BALANCE AS (
+    SELECT
+        id as customerId,
+        activation_date as balanceDate,
+        account_balance as balance
+    FROM
+        CUSTOMERS
+    UNION SELECT
+        customer_id as customerId,
+        transaction_date as balanceDate,
+        running_balance_drived as balance
+    FROM
+        TRX
+),
+CUSTOMER_ACCOUNT_BALANCE_PER_DAY AS (
+    SELECT
+        date,
+        customerId,
+        balance
+    FROM (
+        SELECT
+            date,
+            customerId,
+            balance,
+            row_number() OVER(
+                PARTITION BY date, customerId
+                ORDER BY balanceDate DESC
+            ) as rowNumber
+        FROM (
+            SELECT * FROM
+            DAYS CROSS JOIN CUSTOMER_ACCOUNT_BALANCE
+            ON
+                julianday(DAYS.date) - julianday(DATE(CUSTOMER_ACCOUNT_BALANCE.balanceDate)) >= 0
+            ORDER BY
+                DAYS.date,
+                CUSTOMER_ACCOUNT_BALANCE.balanceDate
+        )
+    )
+    WHERE
+        rowNumber = 1
+),
+ACTIVE_CUSTOMER_ACCOUNT_BALANCE_PER_DAY AS (
+    SELECT
+        UNIQUE_ACTIVE_CUSTOMER_PAR_DAY.date as date,
+        UNIQUE_ACTIVE_CUSTOMER_PAR_DAY.customerId as customerId,
+        CUSTOMER_ACCOUNT_BALANCE_PER_DAY.balance as balance
+    FROM (
+        UNIQUE_ACTIVE_CUSTOMER_PAR_DAY
+        LEFT JOIN CUSTOMER_ACCOUNT_BALANCE_PER_DAY
+        ON
+            (
+                UNIQUE_ACTIVE_CUSTOMER_PAR_DAY.date
+                == CUSTOMER_ACCOUNT_BALANCE_PER_DAY.date
+            ) AND (
+                UNIQUE_ACTIVE_CUSTOMER_PAR_DAY.customerId
+                == CUSTOMER_ACCOUNT_BALANCE_PER_DAY.customerId
+            )
+    )
+),
+TOTAL_BALANCE_AND_NUMBER_OF_ACTIVE_CUSTOMERS_PAR_DAY AS (
+    SELECT
+        date,
+        COUNT(customerId) as activeCustomers,
+        SUM(balance) as totalBalance
+    FROM
+        ACTIVE_CUSTOMER_ACCOUNT_BALANCE_PER_DAY
+    GROUP BY
+        date
+),
+UNIQUE_LOGIN_COUNT_PER_DAY AS (
+    SELECT
+        DATE(created_date) as date,
+        COUNT("customer_id") as loginCount
+    FROM
+        LOGIN
+    GROUP BY
+        DATE(date)
+)
+
+
+
+SELECT
+    UNIQUE_LOGIN_COUNT_PER_DAY.date as date,
+    activeCustomers,
+    totalBalance,
+    loginCount
+FROM (
+    UNIQUE_LOGIN_COUNT_PER_DAY
+    JOIN TOTAL_BALANCE_AND_NUMBER_OF_ACTIVE_CUSTOMERS_PAR_DAY
+    ON
+        UNIQUE_LOGIN_COUNT_PER_DAY.date
+        == TOTAL_BALANCE_AND_NUMBER_OF_ACTIVE_CUSTOMERS_PAR_DAY.date
+)

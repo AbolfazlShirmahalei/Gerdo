@@ -10,3 +10,7 @@ QUESTION1_PART_B_QUERY_PATH = os.path.join(
     QUESTION1_BASE_QUERIES_PATH,
     "question1_part_b",
 )
+QUESTION1_PART_C_QUERY_PATH = os.path.join(
+    QUESTION1_BASE_QUERIES_PATH,
+    "question1_part_c",
+)
