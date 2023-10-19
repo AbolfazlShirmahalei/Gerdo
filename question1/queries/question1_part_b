@@ -1,0 +1,10 @@
+SELECT
+    Customer_id as customerId,
+    SUM(Count_login) as visitCount
+FROM
+    LOGIN
+GROUP BY
+    Customer_id
+ORDER BY
+    visitCount DESC
+LIMIT 3
