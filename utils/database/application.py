@@ -1,5 +1,5 @@
 import sqlite3
-from typing import Dict
+from typing import Dict, List, Type, Tuple
 
 import pandas as pd
 
@@ -20,5 +20,5 @@ class Database:
 
         self.cursor = connection.cursor()
 
-    def query(self, my_query: str):
+    def query(self, my_query: str) -> List[Tuple[Type]]:
         return self.cursor.execute(my_query, ).fetchall()
