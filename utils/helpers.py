@@ -6,3 +6,10 @@ def display_query_result_line_by_line(
 ):
     for row in query_result:
         print(row)
+
+
+def read_query(query_path: str) -> str:
+    with open(query_path, "r") as file:
+        query = file.read()
+
+    return query
