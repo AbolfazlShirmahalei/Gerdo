@@ -1,0 +1,48 @@
+SELECT
+    id,
+    step_1,
+    CASE
+        WHEN step_1 = 0 THEN 0
+        ELSE step_2
+    END AS step_2,
+    CASE
+        WHEN step_1 = 0 OR step_2 = 0 THEN 0
+        ELSE step_3
+    END AS step_3,
+    CASE
+        WHEN step_1 = 0 OR step_2 = 0 OR step_3 = 0 THEN 0
+        ELSE step_4
+    END AS step_4,
+    CASE
+        WHEN step_1 = 0 OR step_2 = 0 OR step_3 = 0 OR step_4 = 0 THEN 0
+        ELSE step_5
+    END AS step_5,
+    CASE
+        WHEN step_1 = 0 OR step_2 = 0 OR step_3 = 0 OR step_4 = 0
+        OR step_5 = 0 THEN 0
+        ELSE step_6
+    END AS step_6,
+    CASE
+        WHEN step_1 = 0 OR step_2 = 0 OR step_3 = 0 OR step_4 = 0
+        OR step_5 = 0 OR step_6 = 0 THEN 0
+        ELSE step_7
+    END AS step_7,
+    CASE
+        WHEN step_1 = 0 OR step_2 = 0 OR step_3 = 0 OR step_4 = 0
+        OR step_5 = 0 OR step_6 = 0 OR step_7 = 0 THEN 0
+        ELSE step_8
+    END AS step_8,
+    CASE
+        WHEN step_1 = 0 OR step_2 = 0 OR step_3 = 0 OR step_4 = 0
+        OR step_5 = 0 OR step_6 = 0 OR step_7 = 0 OR step_8 = 0 THEN 0
+        ELSE step_9
+    END AS step_9,
+    CASE
+        WHEN step_1 = 0 OR step_2 = 0 OR step_3 = 0 OR step_4 = 0
+        OR step_5 = 0 OR step_6 = 0 OR step_7 = 0 OR step_8 = 0
+        OR step_9 = 0 THEN 0
+        ELSE step_10
+    END AS step_10
+FROM
+    BUG
+LIMIT 100

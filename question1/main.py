@@ -34,7 +34,7 @@ def question1(
     )
 
     part_c_query_result = database.query(part_c_query)
-    print("\nQuestion1 - Part c")
+    print("\nQuestion1 - Part c:")
     display_query_result_line_by_line(
         query_result=part_c_query_result,
     )

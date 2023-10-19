@@ -21,4 +21,4 @@ class Database:
         self.cursor = connection.cursor()
 
     def query(self, my_query: str) -> List[Tuple[Type]]:
-        return self.cursor.execute(my_query, ).fetchall()
+        return self.cursor.execute(my_query).fetchall()
