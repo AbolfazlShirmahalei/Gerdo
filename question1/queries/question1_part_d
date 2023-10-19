@@ -1,0 +1,60 @@
+WITH DAYS AS (
+    SELECT DISTINCT DATE(transaction_date) as date FROM TRX
+),
+COMPLETE_CUSTOMER_DAY AS (
+    SELECT
+        DAYS.date as date,
+        CUSTOMERS.id as customerId
+    FROM DAYS CROSS JOIN CUSTOMERS
+),
+CUSTOMERS_TRANSACTIONS_PER_DAY AS (
+    SELECT
+        DATE(transaction_date) as date,
+        customer_id as customerId,
+        SUM(amount) as transactionAmount
+    FROM
+        TRX
+    GROUP BY
+        customer_id,
+        DATE(transaction_date)
+),
+COMPLETE_CUSTOMERS_TRANSACTIONS_PER_DAY AS (
+    SELECT
+        COMPLETE_CUSTOMER_DAY.date as date,
+        COMPLETE_CUSTOMER_DAY.customerId as customerId,
+        CASE
+            WHEN CUSTOMERS_TRANSACTIONS_PER_DAY.transactionAmount is NULL THEN 0
+            ELSE CUSTOMERS_TRANSACTIONS_PER_DAY.transactionAmount
+        END AS transactionAmount
+    FROM
+    COMPLETE_CUSTOMER_DAY
+    LEFT JOIN CUSTOMERS_TRANSACTIONS_PER_DAY
+    ON
+        COMPLETE_CUSTOMER_DAY.date == CUSTOMERS_TRANSACTIONS_PER_DAY.date
+        AND (
+            COMPLETE_CUSTOMER_DAY.customerId
+            == CUSTOMERS_TRANSACTIONS_PER_DAY.customerId
+        )
+),
+CUSTOMER_TRANSACTIONS_IN_LAST_THREE_DAYS AS (
+    SELECT
+        date,
+        customerId,
+        SUM(transactionAmount) OVER(
+            PARTITION BY customerId
+            ORDER BY DATE(date)
+            RANGE BETWEEN 2 PRECEDING AND CURRENT ROW
+        ) as transactionAmountInLastThreeDays
+    FROM
+        COMPLETE_CUSTOMERS_TRANSACTIONS_PER_DAY
+)
+
+
+SELECT
+    customerId
+FROM
+    CUSTOMER_TRANSACTIONS_IN_LAST_THREE_DAYS
+GROUP BY
+    customerId
+HAVING
+    MIN(transactionAmountInLastThreeDays) > 10000000
