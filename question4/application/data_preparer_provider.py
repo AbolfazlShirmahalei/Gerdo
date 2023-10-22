@@ -2,7 +2,7 @@ from typing import Optional, Dict, List, Set, Union
 
 from pyspark.sql import DataFrame
 
-from question4.application import Graph
+from question4.application.graph_provider import Graph
 
 
 class Graph2VecDataPreparer:
