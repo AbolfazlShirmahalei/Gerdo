@@ -34,7 +34,7 @@ class Graph2VecDataPreparer:
     @staticmethod
     def _get_wl_sub_graph_vocab(
         sub_graph_index_to_wl_sab_graphs_hash: Dict[int, Set[str]],
-    ) -> Dict[str, Union[Dict[int, str], Dict[str, int]], int]:
+    ) -> Dict[str, Union[Dict[int, str], Dict[str, int], int]]:
         wl_sub_graphs = set()
 
         for sub_graph_index in sub_graph_index_to_wl_sab_graphs_hash.keys():
