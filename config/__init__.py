@@ -1,4 +1,5 @@
 from .data_path import (
+    BASE_PATH,
     BUG_PATH,
     CAMPAIGN_PATH,
     CUSTOMERS_PATH,
