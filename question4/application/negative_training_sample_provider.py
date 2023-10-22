@@ -2,7 +2,7 @@ from typing import Dict, Set, List
 
 import numpy as np
 
-from question4.config.negative_training_sample_provider import (
+from question4.question4_config.negative_training_sample_provider import (
     CONFIDENCE_COEFFICIENT,
     NUMBER_OF_NEGATIVE_SAMPLES,
 )

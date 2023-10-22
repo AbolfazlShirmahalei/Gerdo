@@ -11,7 +11,7 @@ from question4.application.embedder_model_provider import (
 from question4.application.negative_training_sample_provider import (
     NegativeSampleGenerator,
 )
-from question4.config.trainer_provider import DEVICE
+from question4.question4_config.trainer_provider import DEVICE
 
 
 class BatchGenerator:
