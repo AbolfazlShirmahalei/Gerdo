@@ -28,7 +28,7 @@ class Graph2VecDataPreparer:
         return {
             index + 1: sub_graph_nodes
             for index, sub_graph_nodes
-            in connected_sub_graphs
+            in enumerate(connected_sub_graphs)
         }
 
     @staticmethod
