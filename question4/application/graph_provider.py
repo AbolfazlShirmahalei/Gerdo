@@ -1,4 +1,4 @@
-from typing import List, Tuple, Dict, Optional, Set
+from typing import List, Tuple, Dict, Optional, Set, Type
 
 import networkx
 
@@ -33,7 +33,10 @@ class Graph:
             networkx.strongly_connected_components(self.directed_graph)
         ]
 
-    def get_wl_subgraph_hashes_per_nodes(self, iterations: int) -> Dict[List[str]]:
+    def get_wl_subgraph_hashes_per_nodes(
+        self,
+        iterations: int,
+    ) -> Dict[Type, List[str]]:
         return networkx.weisfeiler_lehman_subgraph_hashes(
             self.undirected_graph,
             iterations=iterations,
