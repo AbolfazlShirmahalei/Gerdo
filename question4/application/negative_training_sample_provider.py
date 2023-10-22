@@ -34,7 +34,7 @@ class NegativeSampleGenerator:
         negative_targets = np.array([
             np.array(list(
                 set(training_sample_random_candidates)
-                - set(self.sub_graph_index_to_graph_nodes[graph_index])
+                - set(self.sub_graph_index_to_wl_indices[graph_index])
             )[:self.number_of_negative_samples])
             for graph_index, training_sample_random_candidates
             in zip(
