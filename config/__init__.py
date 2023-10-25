@@ -6,4 +6,6 @@ from .data_path import (
     GRAPH_MINING_PATH,
     LOGIN_PATH,
     TRX_PATH,
+    FEMALE_NAMES_PATH,
+    MALE_NAMES_PATH,
 )
